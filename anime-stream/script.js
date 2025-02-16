@@ -48,6 +48,18 @@ const debounce = (func, delay = 300) => {
     };
 };
 
+const encodeAnimeData = (data) => {
+    return btoa(encodeURIComponent(JSON.stringify(data))).split('').reverse().join('');
+};
+
+const decodeAnimeData = (encoded) => {
+    try {
+        return JSON.parse(decodeURIComponent(atob(encoded.split('').reverse().join(''))));
+    } catch {
+        return null;
+    }
+};
+
 const createAnimeCard = (anime, isSearch = false) => {
     const card = document.createElement('div');
     card.className = 'anime-card';
@@ -77,8 +89,11 @@ const createAnimeCard = (anime, isSearch = false) => {
 
     playBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const episode = anime.episode || 1;
-        window.location.href = `watch.html?anime=${encodeURIComponent(anime.title)}&episode=${episode}`;
+        const encodedData = encodeAnimeData({
+            title: anime.title,
+            episode: anime.episode || 1
+        });
+        window.location.href = `watch.html?data=${encodedData}`;
     });
 
     cardImage.addEventListener('mouseenter', () => {
@@ -237,9 +252,12 @@ closeModal.addEventListener('click', () => {
 
 watchNowBtn.addEventListener('click', () => {
     if (currentAnime) {
-        // Get the latest episode for new releases
         const episode = currentAnime.latest_episode || 1;
-        window.location.href = `watch.html?anime=${encodeURIComponent(currentAnime.title)}&episode=${episode}`;
+        const encodedData = encodeAnimeData({
+            title: currentAnime.title,
+            episode: episode
+        });
+        window.location.href = `watch.html?data=${encodedData}`;
     }
 });
 
