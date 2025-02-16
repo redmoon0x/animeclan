@@ -1,7 +1,7 @@
 // API endpoints
 const API = {
-    episodes: 'http://localhost:3000/api/episodes',
-    search: 'http://localhost:3000/api/search',
+    episodes: (title) => `http://localhost:3000/api/episodes?title=${encodeURIComponent(title)}`,
+    search: (query) => `http://localhost:3000/api/search?q=${encodeURIComponent(query)}`,
     anime: (title) => `http://localhost:3000/api/anime/${encodeURIComponent(title)}`
 };
 
@@ -118,23 +118,35 @@ const loadAnimeData = async () => {
     }
     
     try {
-        const response = await fetch(API.anime(title));
-        const data = await response.json();
-        currentAnimeData = data;
+        // First get the episodes list
+        const episodesResponse = await fetch(API.episodes(title));
+        const episodesData = await episodesResponse.json();
         
-    // Set anime details
-    animeTitle.textContent = data.title;
-    animeDescription.textContent = data.description || 'No description available.';
-    animeRating.textContent = data.rating || 'N/A';
-    episodes = data.episodes;
-    totalEpisodesCount = episodes.length;
-    totalEpisodes.textContent = `${totalEpisodesCount} Episodes`;
-    
-    // Get current episode data
-    const currentEpisodeData = episodes.find(ep => ep.number === currentEpisode) || episodes[0];
-    if (currentEpisodeData) {
-        currentEpisode = currentEpisodeData.number;
-    }
+        // Then get anime details
+        const animeResponse = await fetch(API.anime(title));
+        const animeData = await animeResponse.json();
+        currentAnimeData = animeData;
+        
+        // Set anime details
+        animeTitle.textContent = animeData.title;
+        animeDescription.textContent = animeData.description || 'No description available.';
+        animeRating.textContent = animeData.rating || 'N/A';
+        
+        // Process episodes from episodesData
+        episodes = episodesData.map((ep, index) => ({
+            number: ep.episode_number || index + 1,
+            title: ep.title || `Episode ${ep.episode_number || index + 1}`,
+            embed_url: `https://2anime.xyz/embed/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number || index + 1}`
+        })).sort((a, b) => a.number - b.number);
+        
+        totalEpisodesCount = episodes.length;
+        totalEpisodes.textContent = `${totalEpisodesCount} Episodes`;
+        
+        // Get current episode data
+        const currentEpisodeData = episodes.find(ep => ep.number === currentEpisode) || episodes[0];
+        if (currentEpisodeData) {
+            currentEpisode = currentEpisodeData.number;
+        }
         
         // Update episodes list and play current episode
         updateEpisodesList(episodes);
@@ -156,7 +168,7 @@ const handleSearch = debounce(async (query) => {
     }
 
     try {
-        const response = await fetch(`${API.search}?q=${encodeURIComponent(query)}`);
+        const response = await fetch(API.search(query));
         const data = await response.json();
         
         searchSuggestions.innerHTML = '';
