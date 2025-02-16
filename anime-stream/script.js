@@ -10,6 +10,7 @@ const API = {
 // State
 let currentPage = 1;
 let currentAnime = null;
+let currentTrendingPage = 1;
 
 // DOM Elements
 const searchInput = document.getElementById('searchInput');
@@ -22,6 +23,9 @@ const loadMoreBtn = document.getElementById('loadMoreBtn');
 const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
 const currentPageSpan = document.getElementById('currentPage');
+const prevPageTrending = document.getElementById('prevPageTrending');
+const nextPageTrending = document.getElementById('nextPageTrending');
+const currentPageTrending = document.getElementById('currentPageTrending');
 
 // Modal Elements
 const animeModal = document.getElementById('animeModal');
@@ -91,7 +95,7 @@ const createAnimeCard = (anime, isSearch = false) => {
 // Load trending anime
 const loadTrendingAnime = async () => {
     try {
-        const response = await fetch(API.trending);
+        const response = await fetch(`${API.trending}?page=${currentTrendingPage}`);
         const data = await response.json();
         
         trendingGrid.innerHTML = '';
@@ -104,6 +108,10 @@ const loadTrendingAnime = async () => {
             const card = createAnimeCard(anime);
             trendingGrid.appendChild(card);
         });
+
+        // Update trending pagination
+        currentPageTrending.textContent = `Page ${currentTrendingPage}`;
+        prevPageTrending.disabled = currentTrendingPage === 1;
     } catch (error) {
         console.error('Error loading trending anime:', error);
         trendingGrid.innerHTML = '<p>Error loading trending anime. Please try again later.</p>';
@@ -199,7 +207,8 @@ const handleSearch = debounce(async (query) => {
                 const card = createAnimeCard(anime, true);
                 resultsGrid.appendChild(card);
             });
-            searchResults.style.display = 'block';
+            // Only show search results if we have results
+            searchResults.style.display = data.length ? 'block' : 'none';
         }
         
         searchSuggestions.style.display = data.length ? 'block' : 'none';
@@ -234,8 +243,6 @@ watchNowBtn.addEventListener('click', () => {
     }
 });
 
-loadMoreBtn.addEventListener('click', loadTrendingAnime);
-
 prevPageBtn.addEventListener('click', () => {
     if (currentPage > 1) {
         loadNewReleases(currentPage - 1);
@@ -246,10 +253,22 @@ nextPageBtn.addEventListener('click', () => {
     loadNewReleases(currentPage + 1);
 });
 
+prevPageTrending.addEventListener('click', () => {
+    if (currentTrendingPage > 1) {
+        currentTrendingPage--;
+        loadTrendingAnime();
+    }
+});
+
+nextPageTrending.addEventListener('click', () => {
+    currentTrendingPage++;
+    loadTrendingAnime();
+});
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    loadTrendingAnime();
-    loadNewReleases();
+    loadTrendingAnime(1);
+    loadNewReleases(1);
 });
 
 // Close modal when clicking outside
