@@ -78,16 +78,18 @@
 .watch-page {
     margin-top: 4rem;
     display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 0;
+    grid-template-columns: 1fr 350px;
+    gap: 1rem;
     height: calc(100vh - 4rem);
     position: relative;
+    padding: 0 1rem;
 }
 
 /* Video Section */
 .video-section {
-    padding: 1.5rem;
+    padding: 0.5rem;
     overflow-y: auto;
+    scroll-behavior: smooth;
 }
 
 .player-wrapper {
@@ -178,11 +180,13 @@
 
 .anime-metadata {
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
     margin: 1rem 0;
-    padding: 1rem;
+    padding: 1.25rem;
     background: var(--surface);
-    border-radius: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .metadata-item {
@@ -270,17 +274,19 @@
 
 .episode-card {
     background-color: var(--surface-light);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.85rem;
     cursor: pointer;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .episode-card:hover {
     transform: translateX(5px);
     background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .episode-card.current-episode {
@@ -328,16 +334,19 @@
 @media (max-width: 1024px) {
     .watch-page {
         grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0;
     }
 
     .episodes-sidebar {
         position: fixed;
-        right: -320px;
+        right: -100%;
         top: 4rem;
-        width: 320px;
+        width: min(400px, 100%);
         height: calc(100vh - 4rem);
-        transition: right 0.3s ease;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 90;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
     }
 
     .episodes-sidebar.show {
@@ -346,43 +355,86 @@
 
     .mobile-episodes-toggle {
         display: flex;
+        transform-origin: center;
+        animation: pulseButton 2s infinite;
     }
+}
+
+@keyframes pulseButton {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 @media (max-width: 768px) {
     .watch-navbar {
-        padding: 1rem;
+        padding: 0.75rem;
     }
 
     .video-section {
-        padding: 1rem;
+        padding: 0.75rem;
     }
 
     .video-controls {
         padding: 0.75rem;
+        gap: 0.5rem;
     }
 
     .episode-nav-btn {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
+        flex: 1;
+        justify-content: center;
     }
 
     .video-info {
-        padding: 0;
+        padding: 0 0.5rem;
     }
 
     .info-header h1 {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
+        line-height: 1.4;
     }
 
     .anime-metadata {
         flex-wrap: wrap;
         gap: 1rem;
-        padding: 0.75rem;
+        padding: 1rem;
+        justify-content: space-around;
     }
 
     .episodes-sidebar {
         width: 100%;
         right: -100%;
+    }
+
+    .episode-card {
+        margin-bottom: 0.65rem;
+        padding: 0.85rem 1rem;
+    }
+    
+    .episodes-list {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .watch-navbar {
+        padding: 0.5rem;
+    }
+
+    .nav-brand {
+        font-size: 0.9rem;
+    }
+
+    .episode-nav-btn {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .mobile-episodes-toggle {
+        padding: 0.75rem 1.5rem;
+        right: 1rem;
+        bottom: 1rem;
     }
 }
