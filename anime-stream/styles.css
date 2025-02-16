@@ -1,3 +1,6 @@
+/* Update the font imports at the top */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
 :root {
     --primary-color: #FF4B8C;
     --primary-dark: #D93D75;
@@ -19,10 +22,15 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Outfit', 'Poppins', sans-serif;
     background-color: var(--background);
     color: var(--text);
     line-height: 1.6;
+}
+
+/* Update headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Navigation */
@@ -44,6 +52,7 @@ body {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Hero Section */
@@ -343,6 +352,7 @@ h2 {
 }
 
 .anime-title {
+    font-family: 'Poppins', sans-serif;
     font-weight: 600;
     margin-bottom: 0.5rem;
     font-size: 1rem;
@@ -667,4 +677,16 @@ h2 {
     .social-links {
         justify-content: center;
     }
+}
+
+/* Add spacing for search results section */
+.search-results {
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+}
+
+.search-results h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
 }

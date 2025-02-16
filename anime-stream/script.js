@@ -48,18 +48,6 @@ const debounce = (func, delay = 300) => {
     };
 };
 
-const encodeAnimeData = (data) => {
-    return btoa(encodeURIComponent(JSON.stringify(data))).split('').reverse().join('');
-};
-
-const decodeAnimeData = (encoded) => {
-    try {
-        return JSON.parse(decodeURIComponent(atob(encoded.split('').reverse().join(''))));
-    } catch {
-        return null;
-    }
-};
-
 const createAnimeCard = (anime, isSearch = false) => {
     const card = document.createElement('div');
     card.className = 'anime-card';
@@ -89,11 +77,8 @@ const createAnimeCard = (anime, isSearch = false) => {
 
     playBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const encodedData = encodeAnimeData({
-            title: anime.title,
-            episode: anime.episode || 1
-        });
-        window.location.href = `watch.html?data=${encodedData}`;
+        const episode = anime.episode || 1;
+        window.location.href = `watch.html?anime=${encodeURIComponent(anime.title)}&episode=${episode}`;
     });
 
     cardImage.addEventListener('mouseenter', () => {
@@ -196,9 +181,15 @@ const handleSearch = debounce(async (query) => {
         const response = await fetch(`${API.search}?q=${encodeURIComponent(query)}`);
         const data = await response.json();
         
-        // Update search suggestions
+        // Always show search results section when searching
+        searchResults.style.display = 'block';
+        
+        // Update search suggestions and results
         searchSuggestions.innerHTML = '';
-        if (Array.isArray(data)) {
+        resultsGrid.innerHTML = '';
+
+        if (Array.isArray(data) && data.length > 0) {
+            // Update search suggestions
             data.slice(0, 5).forEach(anime => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
@@ -216,19 +207,21 @@ const handleSearch = debounce(async (query) => {
                 searchSuggestions.appendChild(div);
             });
             
-            // Also update search results grid
-            resultsGrid.innerHTML = '';
+            // Update search results grid
             data.forEach(anime => {
                 const card = createAnimeCard(anime, true);
                 resultsGrid.appendChild(card);
             });
-            // Only show search results if we have results
-            searchResults.style.display = data.length ? 'block' : 'none';
+            
+            searchSuggestions.style.display = 'block';
+        } else {
+            // Show "no results" message
+            resultsGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; width: 100%; padding: 2rem;">No results found</p>';
+            searchSuggestions.style.display = 'none';
         }
-        
-        searchSuggestions.style.display = data.length ? 'block' : 'none';
     } catch (error) {
         console.error('Error searching:', error);
+        resultsGrid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; width: 100%; padding: 2rem;">Error searching. Please try again.</p>';
     }
 });
 
@@ -253,11 +246,7 @@ closeModal.addEventListener('click', () => {
 watchNowBtn.addEventListener('click', () => {
     if (currentAnime) {
         const episode = currentAnime.latest_episode || 1;
-        const encodedData = encodeAnimeData({
-            title: currentAnime.title,
-            episode: episode
-        });
-        window.location.href = `watch.html?data=${encodedData}`;
+        window.location.href = `watch.html?anime=${encodeURIComponent(currentAnime.title)}&episode=${episode}`;
     }
 });
 
