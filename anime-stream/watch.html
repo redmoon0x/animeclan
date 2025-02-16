@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Anime - AnimeFlix</title>
+    <link rel="stylesheet" href="watch.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Search box styles from main styles.css -->
+    <style>
+        .search-container {
+            position: relative;
+            width: 40%;
+            max-width: 500px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--surface-light);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--surface);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 100;
+            padding: 0.5rem 0;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .suggestion-item img {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .suggestion-info {
+            flex: 1;
+        }
+
+        .suggestion-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .suggestion-episodes {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="watch-body">
+    <nav class="navbar watch-navbar">
+        <div class="nav-left">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-arrow-left"></i>
+                <span class="nav-brand">AnimeFlix</span>
+            </a>
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search anime...">
+            </div>
+            <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+        <div class="nav-right">
+            <button id="toggleEpisodes" class="toggle-episodes-btn">
+                <i class="fas fa-list"></i> Episodes
+            </button>
+        </div>
+    </nav>
+
+    <main class="watch-page">
+        <div class="video-section">
+            <div class="player-wrapper">
+                <div class="player-container">
+                    <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <div class="video-controls">
+                    <button id="prevEpisode" class="episode-nav-btn">
+                        <i class="fas fa-step-backward"></i> Previous
+                    </button>
+                    <button id="nextEpisode" class="episode-nav-btn">
+                        Next <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="video-info">
+                <div class="info-header">
+                    <h1 id="animeTitle"></h1>
+                    <div class="episode-navigation">
+                        <span id="episodeTitle" class="current-episode-title"></span>
+                        <div class="episode-progress">
+                            <span id="episodeProgress"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="anime-metadata">
+                    <div class="metadata-item">
+                        <i class="fas fa-star"></i>
+                        <span id="animeRating">N/A</span>
+                    </div>
+                    <div class="metadata-item">
+                        <i class="fas fa-film"></i>
+                        <span id="totalEpisodes">N/A</span>
+                    </div>
+                    <div class="metadata-item">
+                        <i class="fas fa-closed-captioning"></i>
+                        <span>SUB</span>
+                    </div>
+                </div>
+                <p id="animeDescription" class="anime-description"></p>
+            </div>
+        </div>
+
+        <aside class="episodes-sidebar" id="episodesSidebar">
+            <div class="sidebar-header">
+                <h2>Episodes</h2>
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="episodes-filter">
+                <input type="text" id="episodeSearch" placeholder="Search episodes...">
+            </div>
+            <div class="episodes-list" id="episodesList">
+                <!-- Episodes will be loaded here -->
+            </div>
+        </aside>
+    </main>
+
+    <!-- Mobile Episode List Toggle -->
+    <button id="mobileEpisodesToggle" class="mobile-episodes-toggle">
+        <i class="fas fa-list"></i>
+        <span>Episodes</span>
+    </button>
+
+    <script src="watch.js"></script>
+</body>
+</html>
