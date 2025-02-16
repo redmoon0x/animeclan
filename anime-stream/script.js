@@ -56,7 +56,7 @@ const createAnimeCard = (anime, isSearch = false) => {
             </div>
         </div>
         <div class="anime-card-content">
-            <div class="anime-title">${anime.title}</div>
+            <div class="anime-title">${anime.title.split(',')[0]}</div>
             ${anime.episode ? `<div class="anime-episode">Episode ${anime.episode}</div>` : ''}
         </div>
     `;
@@ -146,7 +146,7 @@ const showAnimeDetails = async (anime) => {
         
         // Update modal content
         animeBanner.src = data.banner_url || data.thumbnail_url;
-        modalAnimeTitle.textContent = data.title;
+        modalAnimeTitle.textContent = data.title.split(',')[0];
         animeDescription.textContent = data.description || 'No description available.';
         animeRating.textContent = data.rating || 'N/A';
         episodeCount.textContent = data.episodes ? data.episodes.length : 'N/A';
@@ -182,7 +182,7 @@ const handleSearch = debounce(async (query) => {
                 div.innerHTML = `
                     <img src="${anime.thumbnail_url}" alt="${anime.title}">
                     <div class="suggestion-info">
-                        <div class="suggestion-title">${anime.title}</div>
+                        <div class="suggestion-title">${anime.title.split(',')[0]}</div>
                         <div class="suggestion-episodes">${anime.episodes_count || 'N/A'} Episodes</div>
                     </div>
                 `;
