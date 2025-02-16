@@ -1,8 +1,8 @@
 // API endpoints
 const API = {
-    episodes: (title) => `http://localhost:3000/api/episodes?title=${encodeURIComponent(title)}`,
-    search: (query) => `http://localhost:3000/api/search?q=${encodeURIComponent(query)}`,
-    anime: (title) => `http://localhost:3000/api/anime/${encodeURIComponent(title)}`
+    episodes: (title) => `/api/episodes?title=${encodeURIComponent(title)}`,
+    search: (query) => `/api/search?q=${encodeURIComponent(query)}`,
+    anime: (title) => `/api/anime/${encodeURIComponent(title)}`
 };
 
 // DOM Elements
@@ -136,7 +136,7 @@ const loadAnimeData = async () => {
         episodes = episodesData.map((ep, index) => ({
             number: ep.episode_number || index + 1,
             title: ep.title || `Episode ${ep.episode_number || index + 1}`,
-            embed_url: `https://2anime.xyz/embed/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number || index + 1}`,
+            embed_url: `https://2anime.xyz/embed/${title.toLowerCase().replace(/\s+/g, '-')}-episode-${ep.episode_number || index + 1}`,
             is_latest: ep.episode_number === episodesData[episodesData.length - 1].episode_number
         })).sort((a, b) => a.number - b.number);
         

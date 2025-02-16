@@ -4,7 +4,7 @@ const axios = require('axios');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Enable CORS and JSON parsing
 app.use(cors());
@@ -139,7 +139,7 @@ app.get('/api/anime/:title', async (req, res) => {
         const episodes = episodesResponse.data.map(ep => ({
             number: ep.episode_number,
             title: ep.title || `Episode ${ep.episode_number}`,
-            embed_url: `https://2anime.xyz/embed/${req.params.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number}`,
+            embed_url: `https://2anime.xyz/embed/${req.params.title.toLowerCase().replace(/\s+/g, '-')}-episode-${ep.episode_number}`,
             is_latest: ep.episode_number === parseInt(episodesResponse.data[episodesResponse.data.length - 1].episode_number)
         }));
 

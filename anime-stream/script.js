@@ -1,10 +1,10 @@
 // API endpoints
 const API = {
-    trending: 'http://localhost:3000/api/trending',
-    search: 'http://localhost:3000/api/search',
-    new: 'http://localhost:3000/api/new',
-    episodes: 'http://localhost:3000/api/episodes',
-    anime: (title) => `http://localhost:3000/api/anime/${encodeURIComponent(title)}`
+    trending: '/api/trending',
+    search: '/api/search',
+    new: '/api/new',
+    episodes: '/api/episodes',
+    anime: (title) => `/api/anime/${encodeURIComponent(title)}`
 };
 
 // State
