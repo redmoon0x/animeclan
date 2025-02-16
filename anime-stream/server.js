@@ -27,8 +27,13 @@ app.get('/api/trending', async (req, res) => {
     try {
         console.log('Fetching trending anime...');
         const response = await axios.get(`${API_BASE}/trending`, { headers: apiHeaders });
-        console.log('Trending response:', response.data);
-        res.json(response.data);
+        // Add latest episode info to trending anime
+        const data = response.data.map(anime => ({
+            ...anime,
+            episode: anime.latest_episode || 1
+        }));
+        console.log('Trending response:', data);
+        res.json(data);
     } catch (error) {
         console.error('Error fetching trending:', error.message);
         if (error.response) {
@@ -47,7 +52,12 @@ app.get('/api/new', async (req, res) => {
             params: { page },
             headers: apiHeaders
         });
-        res.json(response.data);
+        // Add episode info to new releases
+        const data = response.data.map(anime => ({
+            ...anime,
+            episode: anime.latest_episode || anime.episode_number || 1
+        }));
+        res.json(data);
     } catch (error) {
         console.error('Error fetching new releases:', error.message);
         res.status(500).json({ error: 'Failed to fetch new releases', details: error.message });
@@ -120,15 +130,20 @@ app.get('/api/anime/:title', async (req, res) => {
         const episodes = episodesResponse.data.map(ep => ({
             number: ep.episode_number,
             title: ep.title || `Episode ${ep.episode_number}`,
-            embed_url: `https://2anime.xyz/embed/${req.params.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number}`
+            embed_url: `https://2anime.xyz/embed/${req.params.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number}`,
+            is_latest: ep.episode_number === parseInt(episodesResponse.data[episodesResponse.data.length - 1].episode_number)
         }));
+
+        // Add latest episode number
+        const latestEpisode = episodes.length > 0 ? episodes[episodes.length - 1].number : 1;
 
         // Sort episodes by number
         episodes.sort((a, b) => a.number - b.number);
 
         res.json({
             ...animeDetails,
-            episodes: episodes
+            episodes: episodes,
+            latest_episode: latestEpisode
         });
     } catch (error) {
         console.error('Error fetching anime details:', error.message);

@@ -136,14 +136,20 @@ const loadAnimeData = async () => {
         episodes = episodesData.map((ep, index) => ({
             number: ep.episode_number || index + 1,
             title: ep.title || `Episode ${ep.episode_number || index + 1}`,
-            embed_url: `https://2anime.xyz/embed/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number || index + 1}`
+            embed_url: `https://2anime.xyz/embed/${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-episode-${ep.episode_number || index + 1}`,
+            is_latest: ep.episode_number === episodesData[episodesData.length - 1].episode_number
         })).sort((a, b) => a.number - b.number);
         
         totalEpisodesCount = episodes.length;
         totalEpisodes.textContent = `${totalEpisodesCount} Episodes`;
         
+        // If no specific episode is provided in URL, use latest episode
+        if (!currentEpisode && animeData.latest_episode) {
+            currentEpisode = animeData.latest_episode;
+        }
+        
         // Get current episode data
-        const currentEpisodeData = episodes.find(ep => ep.number === currentEpisode) || episodes[0];
+        const currentEpisodeData = episodes.find(ep => ep.number === currentEpisode) || episodes[episodes.length - 1];
         if (currentEpisodeData) {
             currentEpisode = currentEpisodeData.number;
         }

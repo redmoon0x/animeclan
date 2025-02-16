@@ -73,7 +73,8 @@ const createAnimeCard = (anime, isSearch = false) => {
 
     playBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        window.location.href = `watch.html?anime=${encodeURIComponent(anime.title)}&episode=1`;
+        const episode = anime.episode || 1;
+        window.location.href = `watch.html?anime=${encodeURIComponent(anime.title)}&episode=${episode}`;
     });
 
     cardImage.addEventListener('mouseenter', () => {
@@ -227,7 +228,9 @@ closeModal.addEventListener('click', () => {
 
 watchNowBtn.addEventListener('click', () => {
     if (currentAnime) {
-        window.location.href = `watch.html?anime=${encodeURIComponent(currentAnime.title)}&episode=1`;
+        // Get the latest episode for new releases
+        const episode = currentAnime.latest_episode || 1;
+        window.location.href = `watch.html?anime=${encodeURIComponent(currentAnime.title)}&episode=${episode}`;
     }
 });
 
